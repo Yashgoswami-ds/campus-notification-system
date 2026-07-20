@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 @Table(name = "campus_notifications")
 @Data
 @Entity
+
 public class Notification {
+    @Column(nullable = false)
+    private Integer retryCount = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,5 +60,4 @@ public class Notification {
     public  void  onUpdate(){
         updatedAt=LocalDateTime.now();
     }
-
 }

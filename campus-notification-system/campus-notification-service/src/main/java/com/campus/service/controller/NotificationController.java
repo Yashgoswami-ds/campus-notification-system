@@ -2,6 +2,8 @@ package com.campus.service.controller;
 
 import com.campus.service.dto.NotificationRequestDto;
 import com.campus.service.dto.NotificationResponseDto;
+import com.campus.service.entity.NotificationPriority;
+import com.campus.service.entity.NotificationStatus;
 import com.campus.service.scheduler.NotificationProcessor;
 import com.campus.service.service.NotificationService;
 import jakarta.validation.Valid;
@@ -60,4 +62,34 @@ public class NotificationController {
                  "Notification processed successfully"
          );
     }
+
+     @GetMapping("/priority/{priority}")
+     public ResponseEntity<List<NotificationResponseDto>> getNotificationsByPriority(
+             @PathVariable NotificationPriority priority){
+
+          return ResponseEntity.ok(
+                  notificationService.getNotificationsByPriority(priority)
+          );
+     }
+
+
+     @GetMapping("/status/{status}")
+     public ResponseEntity<List<NotificationResponseDto>> getNotificationsByStatus(
+             @PathVariable NotificationStatus status){
+
+          return ResponseEntity.ok(
+                  notificationService.getNotificationsByStatus(status)
+          );
+     }
+
+
+     @PutMapping("/{id}/read")
+     public ResponseEntity<NotificationResponseDto> markAsRead(
+             @PathVariable Long id){
+
+          return ResponseEntity.ok(
+                  notificationService.markAsRead(id)
+          );
+     }
 }
+

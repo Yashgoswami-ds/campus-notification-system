@@ -3,6 +3,8 @@ package com.campus.service.service.impl;
 import com.campus.service.dto.NotificationRequestDto;
 import com.campus.service.dto.NotificationResponseDto;
 import com.campus.service.entity.Notification;
+import com.campus.service.entity.NotificationPriority;
+import com.campus.service.entity.NotificationStatus;
 import com.campus.service.entity.User;
 import com.campus.service.exception.ResourceNotFoundException;
 import com.campus.service.mapper.NotificationMapper;
@@ -57,9 +59,6 @@ public List<NotificationResponseDto> getAllNotifications(){
              .stream()
              .map(NotificationMapper::mapToResponse).collect(Collectors.toList());
 
-
-
-
 }
 
 @Override
@@ -104,4 +103,38 @@ public   void deleteNotification(Long id){
             .orElseThrow(()->new RuntimeException("Notification Not Found "));
     notificationRepository.delete(notification);
 }
+
+    @Override
+    public List<NotificationResponseDto> getNotificationsByPriority(NotificationPriority priority){
+
+        return notificationRepository.findByPriority(priority)
+                .stream()
+                .map(NotificationMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<NotificationResponseDto> getNotificationsByStatus(NotificationStatus status){
+
+        return notificationRepository.findByStatus(status)
+                .stream()
+                .map(NotificationMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public NotificationResponseDto markAsRead(Long id){
+
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Notification Not Found"));
+
+        notification.setRead(true);
+
+        Notification updatedNotification = notificationRepository.save(notification);
+
+        return NotificationMapper.mapToResponse(updatedNotification);
+    }
+
 }

@@ -16,6 +16,7 @@ public static Notification mapToEntity(NotificationRequestDto dto, User user){
             .priority(dto.getPriority())
             .status(NotificationStatus.PENDING)
             .isRead(false)
+            .retryCount(0)
             .build();
 }
 

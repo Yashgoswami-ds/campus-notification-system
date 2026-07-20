@@ -56,11 +56,47 @@ public class NotificationProcessor {
 
         } catch (Exception e) {
 
-            // STEP 6: Mark as FAILED
-            notification.setStatus(NotificationStatus.FAILED);
-            notificationRepository.save(notification);
+            int retryCount = notification.getRetryCount();
 
-            log.error("Notification FAILED: {}", notification.getId(), e);
+            if (retryCount < 3) {
+
+                notification.setRetryCount(retryCount + 1);
+                notification.setStatus(NotificationStatus.PENDING);
+
+                notificationRepository.save(notification);
+
+
+                NotificationTask retryTask =
+                        new NotificationTask(
+                                notification.getId(),
+                                notification.getPriority(),
+                                notification.getCreatedAt()
+                        );
+
+
+                notificationQueueService.addTask(retryTask);
+
+
+                log.warn(
+                        "Notification retry scheduled. id: {}, retry count: {}",
+                        notification.getId(),
+                        notification.getRetryCount()
+                );
+
+            } else {
+
+                notification.setStatus(NotificationStatus.DEAD);
+
+                notificationRepository.save(notification);
+
+
+                log.error(
+                        "Notification moved to DEAD after retries: {}",
+                        notification.getId(),e
+                );
+            }
         }
+
+        }
+
     }
-}
