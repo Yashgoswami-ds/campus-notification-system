@@ -1,0 +1,13 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Environment
+.env
+
+# Sensitive config
+src/main/resources/application-local.properties
+src/main/resources/application-secret.propertiesgit init
